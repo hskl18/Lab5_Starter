@@ -1,2 +1,7 @@
 # Lab 5 - Starter
-Make sure you make a PR to your own repo's main and not the class' repo!! Otherwise you will lose points!!
+
+For this lab, it will be important that you have a general idea of what the DOM (Document Object Model) is and how it operates.
+
+### Group Members:
+
+- **Hanbin Tan**: Solo
