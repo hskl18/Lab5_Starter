@@ -1,45 +1,50 @@
 // explore.js
+ window.addEventListener("DOMContentLoaded", init);
 
-window.addEventListener("DOMContentLoaded", init);
+ function init() {
+   const textarea    = document.getElementById("text-to-speak");
+   const voiceSelect = document.getElementById("voice-select");
+   const faceImg     = document.querySelector("#explore img");
+   const talkButton  = document.querySelector("#explore button");
 
-function init() {
-  const textarea = document.getElementById("text-to-speak");
-  const voiceSelect = document.getElementById("voice-select");
-  const faceImg = document.querySelector("#explore img");
-  const talkButton = document.querySelector("#explore button");
+   talkButton.disabled = true;
+   function loadVoices() {
+     voiceSelect.innerHTML =
+       '<option value="select" disabled selected>Select Voice:</option>';
+     speechSynthesis.getVoices().forEach((v) => {
+       const opt = document.createElement("option");
+       opt.value       = v.name;
+       opt.textContent = `${v.name} (${v.lang})`;
+       voiceSelect.appendChild(opt);
+     });
+   }
+   loadVoices();
+   speechSynthesis.addEventListener("voiceschanged", loadVoices);
 
-  // Populate the voice dropdown
-  function loadVoices() {
-    // avoid doubling up if voiceschanged fires more than once
-    voiceSelect.innerHTML =
-      '<option value="select" disabled selected>Select Voice:</option>';
+   voiceSelect.addEventListener("change", () => {
+     if (voiceSelect.value !== "select") {
+       talkButton.disabled = false;
+     }
+   });
 
-    const voices = speechSynthesis.getVoices();
-    voices.forEach((v) => {
-      const opt = document.createElement("option");
-      opt.value = v.name;
-      opt.textContent = `${v.name} (${v.lang})`;
-      voiceSelect.appendChild(opt);
-    });
-  }
-  loadVoices();
-  speechSynthesis.addEventListener("voiceschanged", loadVoices);
+   talkButton.addEventListener("click", () => {
 
-  talkButton.addEventListener("click", () => {
-    if (!textarea.value.trim()) return;
+     if (voiceSelect.value === "select") {
+       alert("Please select a voice first!");
+       return;
+     }
+     if (!textarea.value.trim()) return;
 
-    const utter = new SpeechSynthesisUtterance(textarea.value);
-    // pick the selected voice by name
-    const selected = voiceSelect.value;
-    utter.voice =
-      speechSynthesis.getVoices().find((v) => v.name === selected) || null;
+     const utter = new SpeechSynthesisUtterance(textarea.value);
+     utter.voice =
+       speechSynthesis.getVoices().find((v) => v.name === voiceSelect.value) ||
+       null;
 
-    // swap to open‑mouth face while speaking
-    faceImg.src = "assets/images/smiling-open.png";
-    utter.addEventListener("end", () => {
-      faceImg.src = "assets/images/smiling.png";
-    });
+     faceImg.src = "assets/images/smiling-open.png";
+     utter.addEventListener("end", () => {
+       faceImg.src = "assets/images/smiling.png";
+     });
 
-    speechSynthesis.speak(utter);
-  });
-}
+     speechSynthesis.speak(utter);
+   });
+ }
