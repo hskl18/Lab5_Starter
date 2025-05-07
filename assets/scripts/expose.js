@@ -34,7 +34,7 @@ function init() {
     audio.volume = vol / 100;
   });
 
-  // on play, actually play audio and confetti if it's the party horn
+  // on play, actually play audio and confetti if it's the party  horn
   playButton.addEventListener("click", () => {
     if (!audio.src) return; // nothing selected
     audio.play();
